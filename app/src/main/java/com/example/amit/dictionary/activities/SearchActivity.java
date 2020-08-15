@@ -11,8 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +31,7 @@ import com.example.amit.dictionary.networking.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,16 +111,27 @@ public class SearchActivity extends AppCompatActivity implements Callback<Search
         mSearchKey = searchKey;
         state = LOAD_STARTED;
         DictionaryApplication.getInstance().setState(state, this);
+
+        /**
+         * save searchKey to show in history
+         */
         if (mSearchKey != null && !mSearchKey.isEmpty()) {
             mSearchKey = mSearchKey.trim();
             ContentValues cv = new ContentValues();
             cv.put(DictContract.DictEntry.WORD, mSearchKey);
             this.getContentResolver().insert(DictContract.DictEntry.HISTORY_CONTENT_URI, cv);
         }
+
+        /**
+         * make network call and fetch matching words
+         */
         if (mSearchKey != null && !mSearchKey.trim().isEmpty() && checkConnectivity(mConnectivityManager)) {
-            if(checkConnectivity(mConnectivityManager))
+            /**
+             * if network is avail make network request, 'this' will listen to result in callback func.
+             */
+            if(checkConnectivity(mConnectivityManager)){
                 NetworkUtils.queryWord(mSearchKey, this);
-            else{
+            }else{
                 state = DictionaryApplication.LOADING_STATE.LOAD_FAILED;
                 DictionaryApplication.getInstance().setState(state, this);
                 Toast.makeText(this, getString(R.string.not_conn_msg), Toast.LENGTH_SHORT).show();
@@ -128,12 +139,15 @@ public class SearchActivity extends AppCompatActivity implements Callback<Search
         }
     }
 
+    /**
+     *
+     * @param call the network call made
+     * @param response search resulut
+     */
     @Override
-    public void onResponse(Call<SearchResult> call, @Nullable Response<SearchResult> response) {
-        Log.d("Response Message", response.message());
-        Log.d("Response Headers", response.headers().toString());
-        Log.d("Response Error Body", response.errorBody().toString());
-        if (response != null ) {
+    public void onResponse(Call<SearchResult> call,@NonNull  Response<SearchResult> response) {
+        Log.v("result", response.body().toString());
+        if (response.body() != null ) {
             List<SearchResult.QueryResult> searchWords = response.body().results;
             if (searchWords != null && !searchWords.isEmpty()) {
                 state = DictionaryApplication.LOADING_STATE.LOAD_STOPPED;
@@ -173,4 +187,5 @@ public class SearchActivity extends AppCompatActivity implements Callback<Search
         outState.putString(SearchManager.QUERY, mSearchKey);
         super.onSaveInstanceState(outState);
     }
+
 }

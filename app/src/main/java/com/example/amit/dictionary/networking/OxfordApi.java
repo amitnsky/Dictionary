@@ -52,12 +52,25 @@ public interface OxfordApi {
     @GET(ENDPOINT_SEARCH + "/{lang}")
     Call<SearchResult> getSearchResults(@Path("lang") String lang, @Query("q") String word);
 
-    //method for matching words query from default language
+    /**
+     * method for matching words query from default language
+     */
+
+    /**
+     * @DEPRECATED
+     */
     @Headers({
             OXFORD_HEADER_ACCEPT, OXFORD_HEADER_ID, OXFORD_HEADER_KEY
     })
     @GET(ENDPOINT_SEARCH + "/" + DEFAULT_LANG)
     Call<SearchResult> getSearchResults(@Query("q") String word);
+
+    /**
+     * Hardcoding since oxford api prototype account does not allow this endpoint
+     * https://gist.githubusercontent.com/amitnsky/e0c70dd972f15d93ad62947b5306f320/raw/f1c6061afbb88448372222b7b90d41c43e4e61ce/search.json
+     */
+    @GET("amitnsky/e0c70dd972f15d93ad62947b5306f320/raw/f1c6061afbb88448372222b7b90d41c43e4e61ce/search.json")
+    Call<SearchResult> getSearchResults();
 
     //"https://od-api.oxforddictionaries.com:443/api/v1/entries/" + language + "/" + word_id;
     //method for matching words query from given language

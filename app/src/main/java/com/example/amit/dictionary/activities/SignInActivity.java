@@ -44,8 +44,10 @@ public class SignInActivity extends AppCompatActivity {
         isFirstTime = sharedPreferences.getBoolean(getString(R.string.IS_FIRST_TIME_KEY), true);
 
         Intent intent = getIntent();
+        Log.v("signinflow", "onCreate");
         mAuthStateListener = (@NonNull FirebaseAuth firebaseAuth) -> {
            FirebaseUser user = firebaseAuth.getCurrentUser();
+            Log.v("signinflow", "getCurrentUser");
             if (user != null) {
                 //logged in
                 signInsuccessful();
@@ -64,6 +66,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.v("signinflow", "onResume");
         if (mAuthStateListener != null)
             mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
@@ -77,6 +80,7 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v("signinflow", "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -102,9 +106,11 @@ public class SignInActivity extends AppCompatActivity {
 
 
     void startSignInFlow() {
+        Log.v("signinflow", "startSignInFlow");
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build());
+                new AuthUI.IdpConfig.GoogleBuilder().build(),
+                new AuthUI.IdpConfig.FacebookBuilder().build());
 
         // Create and launch sign-in intent
         startActivityForResult(

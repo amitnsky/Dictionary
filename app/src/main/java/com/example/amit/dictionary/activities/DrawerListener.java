@@ -93,6 +93,7 @@ public class DrawerListener extends AppCompatActivity
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Toast.makeText(getBaseContext(), "Hi", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -211,30 +212,28 @@ public class DrawerListener extends AppCompatActivity
     }
 
     void startSearchActivity() {
-//        startActivity(new Intent(
-//                DrawerListener.this, SearchActivity.class)
-//                .putExtra(SearchManager.QUERY, mSearchKey));
+        startActivity(new Intent(
+                DrawerListener.this, SearchActivity.class)
+                .putExtra(SearchManager.QUERY, mSearchKey));
 
         // insert query into history database in background
         ContentValues cv = new ContentValues();
         cv.put(DictContract.DictEntry.WORD, mSearchKey);
-        this.getContentResolver().insert(DictContract.DictEntry.HISTORY_CONTENT_URI, cv);
-
         cv.put(DictContract.DictEntry.WORD_ID, mSearchKey);
         this.getContentResolver().insert(DictContract.DictEntry.SEARCH_CONTENT_URI, cv);
 
         // start word activity
-        Intent intent = new Intent(DrawerListener.this, WordActivity.class);
-        intent.putExtra(DictContract.DictEntry.WORD_ID, mSearchKey);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Bundle bundle = ActivityOptions.makeCustomAnimation(
-                    DrawerListener.this,
-                    R.anim.slide_from_right, R.anim.slide_to_left).toBundle();
-            startActivity(intent, bundle);
-        } else {
-            overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-            startActivity(intent);
-        }
+//        Intent intent = new Intent(DrawerListener.this, WordActivity.class);
+//        intent.putExtra(DictContract.DictEntry.WORD_ID, mSearchKey);
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            Bundle bundle = ActivityOptions.makeCustomAnimation(
+//                    DrawerListener.this,
+//                    R.anim.slide_from_right, R.anim.slide_to_left).toBundle();
+//            startActivity(intent, bundle);
+//        } else {
+//            overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+//            startActivity(intent);
+//        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

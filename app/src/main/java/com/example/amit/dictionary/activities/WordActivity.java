@@ -246,7 +246,7 @@ public class WordActivity extends AppCompatActivity implements Callback<String>,
 
     @Override
     public void onResponse(Call<String> call, @NonNull Response<String> response) {
-        Log.d("Response Body", response.body());
+     //   Log.d("Response Body", response.body());
         mWord = DictionaryJsonUtils.getSingleWord(response.body());
         if (mWord != null) {
             invalidateOptionsMenu();
